@@ -1,0 +1,58 @@
+{
+  "name": "Sorceress Igniter",
+  "goal": {
+    "IGNITER": 15,
+    "GRUDGE": 15,
+    "CURSED_DOLL": 15,
+    "HIT_MASTER": 15,
+    "ALL_OUT_ATTACK": 15
+  },
+  "books": {
+    "GRUDGE": 12,
+    "IGNITER": 9
+  },
+  "items": [
+    {
+      "type": "NECKLACE",
+      "engravings": {
+        "CURSED_DOLL": 3,
+        "ALL_OUT_ATTACK": 5
+      }
+    },
+    {
+      "type": "EARRING",
+      "engravings": {
+        "HIT_MASTER": 3,
+        "CURSED_DOLL": 5
+      }
+    },
+    {
+      "type": "EARRING",
+      "engravings": {
+        "GRUDGE": 3,
+        "HIT_MASTER": 5
+      }
+    },
+    {
+      "type": "RING",
+      "engravings": {
+        "IGNITER": 3,
+        "ALL_OUT_ATTACK": 3
+      }
+    },
+    {
+      "type": "RING",
+      "engravings": {
+        "IGNITER": 3,
+        "HIT_MASTER": 3
+      }
+    },
+    {
+      "type": "STONE",
+      "engravings": {
+        "ALL_OUT_ATTACK": 8,
+        "CURSED_DOLL": 7
+      }
+    }
+  ]
+}
