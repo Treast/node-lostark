@@ -4,7 +4,8 @@
     "target": "es2015",
     "declaration": true,
     "outDir": "./dist",
-    "typeRoots": ["./node_modules/@types", "./types"]
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "esModuleInterop": true
   },
-  "include": ["src/**/*", "index.ts"]
+  "include": ["src/**/*", "index.ts", "./types"]
 }
