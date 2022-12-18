@@ -22,5 +22,7 @@ export interface Build {
   goal: EngravingValue;
   books: EngravingValue;
   items: Item[];
-  remainingGoal: EngravingValue;
+  remainingGoal?: EngravingValue;
+  optimizedItems?: Item[];
+  destructedEngravings: EngravingValue[];
 }

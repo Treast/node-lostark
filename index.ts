@@ -1,10 +1,11 @@
 #! /usr/bin/env node
 
-import { readFileSync } from 'fs';
 import { join } from 'path';
-import { argv } from 'process';
-import { Build, Item, ItemType } from './types/build';
 import Table from 'cli-table';
+import { argv } from 'process';
+import { readFileSync } from 'fs';
+
+import { Build, Item, ItemType } from './types/build';
 import { Engraving } from './types/engravings';
 
 const buildFile = argv[2];
@@ -32,6 +33,7 @@ const removeItemEngravingToGoal = (build: Build, item: Item): Promise<Build> => 
 const initBuild = (build: Build): Promise<Build> => {
   return new Promise((resolve) => {
     build.remainingGoal = build.goal;
+    build.destructedEngravings = [];
     resolve(build);
   });
 };
@@ -76,6 +78,57 @@ const debugRemainingGoals = (build: Build): void => {
   console.log(table.toString());
 };
 
+const debugDestructed = (build: Build): void => {
+  const engravings = build.destructedEngravings.map((destructedEngravings) => {
+    return Object.entries(destructedEngravings).map(([engraving, value]) => {
+      return [Engraving[engraving], value];
+    })[0];
+  });
+
+  const table = new Table({
+    head: ['Engraving', 'Value'],
+    rows: engravings,
+  });
+
+  console.log(table.toString());
+};
+
+const destructedEngravings = (build: Build): Promise<Build> => {
+  return new Promise((resolve) => {
+    Object.entries(build.remainingGoal).forEach(([engraving, value]) => {
+      while (value > 0) {
+        if (value % 3 === 0 && value <= 9) {
+          build.destructedEngravings.push({ [engraving]: 3 });
+          value -= 3;
+        } else {
+          if (value / 3 > 1) {
+            if (value / 5 >= 1) {
+              build.destructedEngravings.push({ [engraving]: 5 });
+              value -= 5;
+            } else {
+              build.destructedEngravings.push({ [engraving]: value });
+              value = 0;
+            }
+          } else {
+            build.destructedEngravings.push({ [engraving]: 3 });
+            value -= 3;
+          }
+        }
+      }
+    });
+    resolve(build);
+  });
+};
+
+const checkIfBuildIsPossible = (build: Build): void => {
+  const engravingAboveMinimal = build.destructedEngravings.filter((value) => value[0] > 3);
+  if (build.destructedEngravings.length <= 10 && engravingAboveMinimal.length <= 5) {
+    console.log('✅ Build is possible');
+  } else {
+    console.log('⛔ Build is impossible');
+  }
+};
+
 openBuildFile(buildFile)
   .then((build) => {
     console.log(build.name);
@@ -84,6 +137,8 @@ openBuildFile(buildFile)
   .then((build) => initBuild(build))
   .then((build) => removeBooks(build))
   .then((build) => removeStone(build))
+  .then((build) => destructedEngravings(build))
   .then((build) => {
-    debugRemainingGoals(build);
+    debugDestructed(build);
+    checkIfBuildIsPossible(build);
   });
