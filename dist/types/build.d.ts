@@ -1,3 +1,4 @@
+import { Engraving } from './engravings';
 export declare enum ItemType {
     NECKLACE = "NECKLACE",
     EARRING = "EARRING",
@@ -6,19 +7,22 @@ export declare enum ItemType {
     BOOK = "BOOK"
 }
 interface EngravingValue {
-    [key: string]: number;
+    engraving: Engraving;
+    value: number;
 }
 export interface Item {
     type: ItemType;
-    engravings: EngravingValue;
+    engravings: EngravingValue[];
 }
 export interface Build {
     name?: string;
-    goal: EngravingValue;
-    books: EngravingValue;
+    goal: EngravingValue[];
+    books: EngravingValue[];
     items: Item[];
-    remainingGoal?: EngravingValue;
+}
+export interface ProcessBuild extends Build {
+    remainingGoal?: EngravingValue[];
     optimizedItems?: Item[];
-    destructedEngravings: EngravingValue[];
+    destructedEngravings?: EngravingValue[];
 }
 export {};
