@@ -1,58 +1,115 @@
 {
   "name": "Sorceress Igniter",
-  "goal": {
-    "IGNITER": 15,
-    "GRUDGE": 15,
-    "CURSED_DOLL": 15,
-    "HIT_MASTER": 15,
-    "ALL_OUT_ATTACK": 15
-  },
-  "books": {
-    "GRUDGE": 12,
-    "IGNITER": 9
-  },
+  "goal": [
+    {
+      "engraving": "IGNITER",
+      "value": 15
+    },
+    {
+      "engraving": "GRUDGE",
+      "value": 15
+    },
+    {
+      "engraving": "CURSED_DOLL",
+      "value": 15
+    },
+    {
+      "engraving": "HIT_MASTER",
+      "value": 15
+    },
+    {
+      "engraving": "ALL_OUT_ATTACK",
+      "value": 15
+    }
+  ],
+  "books": [
+    {
+      "engraving": "GRUDGE",
+      "value": 12
+    },
+    {
+      "engraving": "IGNITER",
+      "value": 9
+    }
+  ],
   "items": [
     {
       "type": "NECKLACE",
-      "engravings": {
-        "CURSED_DOLL": 3,
-        "ALL_OUT_ATTACK": 5
-      }
+      "engravings": [
+        {
+          "engraving": "CURSED_DOLL",
+          "value": 3
+        },
+        {
+          "engraving": "ALL_OUT_ATTACK",
+          "value": 5
+        }
+      ]
     },
     {
       "type": "EARRING",
-      "engravings": {
-        "HIT_MASTER": 3,
-        "CURSED_DOLL": 5
-      }
+      "engravings": [
+        {
+          "engraving": "HIT_MASTER",
+          "value": 3
+        },
+        {
+          "engraving": "CURSED_DOLL",
+          "value": 5
+        }
+      ]
     },
     {
       "type": "EARRING",
-      "engravings": {
-        "GRUDGE": 3,
-        "HIT_MASTER": 5
-      }
+      "engravings": [
+        {
+          "engraving": "GRUDGE",
+          "value": 3
+        },
+        {
+          "engraving": "HIT_MASTER",
+          "value": 5
+        }
+      ]
     },
     {
       "type": "RING",
-      "engravings": {
-        "IGNITER": 3,
-        "ALL_OUT_ATTACK": 3
-      }
+      "engravings": [
+        {
+          "engraving": "IGNITER",
+          "value": 3
+        },
+        {
+          "engraving": "ALL_OUT_ATTACK",
+          "value": 3
+        }
+      ]
     },
     {
       "type": "RING",
-      "engravings": {
-        "IGNITER": 3,
-        "HIT_MASTER": 3
-      }
+      "engravings": [
+        {
+          "engraving": "IGNITER",
+          "value": 3
+        },
+        {
+          "engraving": "HIT_MASTER",
+          "value": 3
+        }
+      ]
     },
     {
       "type": "STONE",
-      "engravings": {
-        "ALL_OUT_ATTACK": 8,
-        "CURSED_DOLL": 7
-      }
+      "engravings": [
+        {
+          "engraving": "ALL_OUT_ATTACK",
+          "value": 8
+        },
+        {
+          "engraving": "CURSED_DOLL",
+          "value": 7
+        }
+      ]
     }
   ]
 }
