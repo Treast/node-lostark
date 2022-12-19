@@ -149,9 +149,13 @@ const createPerfectStuff = (processBuild: ProcessBuild, existingItems: Item[] = 
     const destructedEngravings = [...processBuild.destructedEngravings.sort((a, b) => b.value - a.value)];
 
     existingItems.forEach((existingItem) => {
-      const firstIndex = destructedEngravings.findIndex((engraving) => existingItem.engravings[0] === engraving);
-      const secondIndex = destructedEngravings.findIndex((engraving) => existingItem.engravings[1] === engraving);
+      const firstIndex = destructedEngravings.findIndex(
+        (engraving) => existingItem.engravings[0].value === engraving.value && existingItem.engravings[0].engraving === engraving.engraving
+      );
       destructedEngravings.splice(firstIndex, 1);
+      const secondIndex = destructedEngravings.findIndex(
+        (engraving) => existingItem.engravings[1].value === engraving.value && existingItem.engravings[1].engraving === engraving.engraving
+      );
       destructedEngravings.splice(secondIndex, 1);
     });
 
