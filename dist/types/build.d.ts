@@ -6,6 +6,10 @@ export declare enum ItemType {
     STONE = "STONE",
     BOOK = "BOOK"
 }
+export declare enum ItemStatus {
+    BUY = "BUY",
+    OWNED = "OWNED"
+}
 interface EngravingValue {
     engraving: Engraving;
     value: number;
@@ -13,6 +17,7 @@ interface EngravingValue {
 export interface Item {
     type: ItemType;
     engravings: EngravingValue[];
+    status?: ItemStatus;
 }
 export interface Build {
     name?: string;

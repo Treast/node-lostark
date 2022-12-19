@@ -5,7 +5,7 @@ import Table from 'cli-table';
 import { argv } from 'process';
 import { readFileSync } from 'fs';
 
-import { Build, Item, ItemType, ProcessBuild } from './types/build';
+import { Build, Item, ItemStatus, ItemType, ProcessBuild } from './types/build';
 import { Engraving } from './types/engravings';
 
 const buildFile = argv[2];
@@ -89,11 +89,15 @@ const debugDestructed = (processBuild: ProcessBuild): void => {
 
 const debugItems = (items: Item[]): void => {
   const emplacementItems = items.map((item) => {
-    return [item.type, item.engravings.map((engraving) => `${Engraving[engraving.engraving]} ${engraving.value}`).join(' / ')];
+    return [
+      item.type,
+      item.engravings.map((engraving) => `${Engraving[engraving.engraving]} ${engraving.value}`).join(' / '),
+      item.status ? ItemStatus[item.status] : 'N/A',
+    ];
   });
 
   const table = new Table({
-    head: ['Emplacement', 'Engravings'],
+    head: ['Emplacement', 'Engravings', 'Status'],
     rows: emplacementItems,
   });
 
@@ -139,15 +143,25 @@ const checkIfBuildIsPossible = (processBuild: ProcessBuild): void => {
   }
 };
 
-const createPerfectStuff = (processBuild: ProcessBuild): Promise<Item[]> => {
+const createPerfectStuff = (processBuild: ProcessBuild, existingItems: Item[] = []): Promise<Item[]> => {
   return new Promise((resolve) => {
     const items = [];
     const destructedEngravings = [...processBuild.destructedEngravings.sort((a, b) => b.value - a.value)];
 
-    for (let i = 0; i < 5; i++) {
+    existingItems.forEach((existingItem) => {
+      const firstIndex = destructedEngravings.findIndex((engraving) => existingItem.engravings[0] === engraving);
+      const secondIndex = destructedEngravings.findIndex((engraving) => existingItem.engravings[1] === engraving);
+      destructedEngravings.splice(firstIndex, 1);
+      destructedEngravings.splice(secondIndex, 1);
+    });
+
+    const emplacements = getRemainingEmplacements(existingItems);
+
+    for (let i = 0; i < 5 - existingItems.length; i++) {
       const item: Item = {
-        type: getItemType(i),
+        type: emplacements[i],
         engravings: [],
+        status: ItemStatus.BUY,
       };
 
       const firstEngraving = destructedEngravings.shift();
@@ -167,10 +181,48 @@ const createPerfectStuff = (processBuild: ProcessBuild): Promise<Item[]> => {
   });
 };
 
-const getItemType = (emplacement: number): ItemType => {
-  if (emplacement === 1) return ItemType.NECKLACE;
-  if (emplacement === 2 || emplacement === 3) return ItemType.EARRING;
-  return ItemType.RING;
+const findCurrentStuff = (processBuild: ProcessBuild): Promise<Item[]> => {
+  return new Promise((resolve) => {
+    const items = [];
+    const engravingsAboveMinimal = [
+      ...processBuild.destructedEngravings.filter((engraving) => engraving.value > VAL_MIN).sort((a, b) => b.value - a.value),
+    ];
+    const engravingsAtMinimal = [...processBuild.destructedEngravings.filter((engraving) => engraving.value === VAL_MIN)];
+
+    processBuild.items.forEach((item) => {
+      const firstEngraving = item.engravings[0];
+      const secondEngraving = item.engravings[1];
+
+      if (
+        (engravingsAboveMinimal.includes(firstEngraving) && engravingsAtMinimal.includes(secondEngraving)) ||
+        (engravingsAboveMinimal.includes(secondEngraving) && engravingsAtMinimal.includes(firstEngraving))
+      ) {
+        item.status = ItemStatus.OWNED;
+        items.push(item);
+      }
+    });
+
+    resolve(items);
+  });
+};
+
+const getRemainingEmplacements = (existingItems: Item[]): ItemType[] => {
+  const remainingEmplacements: ItemType[] = [];
+
+  const necklace = existingItems.filter((item) => item.type === ItemType.NECKLACE);
+  if (necklace.length === 0) remainingEmplacements.push(ItemType.NECKLACE);
+
+  const earrings = existingItems.filter((item) => item.type === ItemType.EARRING);
+  for (let i = 0; i < 2 - earrings.length; i++) {
+    remainingEmplacements.push(ItemType.EARRING);
+  }
+
+  const rings = existingItems.filter((item) => item.type === ItemType.RING);
+  for (let i = 0; i < 2 - rings.length; i++) {
+    remainingEmplacements.push(ItemType.RING);
+  }
+
+  return remainingEmplacements;
 };
 
 openBuildFile(buildFile)
@@ -192,6 +244,8 @@ openBuildFile(buildFile)
     return build;
   })
   .then(async (build) => {
-    const items = await createPerfectStuff(build);
+    const existingItems = await findCurrentStuff(build);
+    // console.log(existingItems);
+    const items = await createPerfectStuff(build, existingItems);
     debugItems(items);
   });
