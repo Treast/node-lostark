@@ -194,8 +194,10 @@ const findCurrentStuff = (processBuild: ProcessBuild): Promise<Item[]> => {
       const secondEngraving = item.engravings[1];
 
       if (
-        (engravingsAboveMinimal.includes(firstEngraving) && engravingsAtMinimal.includes(secondEngraving)) ||
-        (engravingsAboveMinimal.includes(secondEngraving) && engravingsAtMinimal.includes(firstEngraving))
+        (engravingsAboveMinimal.some((engraving) => firstEngraving.value === engraving.value && firstEngraving.engraving === engraving.engraving) &&
+          engravingsAtMinimal.some((engraving) => secondEngraving.value === engraving.value && secondEngraving.engraving === engraving.engraving)) ||
+        (engravingsAboveMinimal.some((engraving) => secondEngraving.value === engraving.value && secondEngraving.engraving === engraving.engraving) &&
+          engravingsAtMinimal.some((engraving) => firstEngraving.value === engraving.value && firstEngraving.engraving === engraving.engraving))
       ) {
         item.status = ItemStatus.OWNED;
         items.push(item);
@@ -247,5 +249,5 @@ openBuildFile(buildFile)
     const existingItems = await findCurrentStuff(build);
     // console.log(existingItems);
     const items = await createPerfectStuff(build, existingItems);
-    debugItems(items);
+    debugItems([...existingItems, ...items]);
   });
